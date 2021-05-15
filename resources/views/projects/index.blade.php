@@ -17,6 +17,7 @@
                         <div><b>Керівник:</b> {{ $project->supervisor }}</div>
                         <div><b>Група:</b> {{ $project->group }}</div>
                         <div><b>Тема:</b> {{ $project->theme }}</div>
+                        <div><b>Тип:</b> {{ $project->projectType->name }}</div>
                         <div><b>Дата реєстрації:</b> {{ $project->created_at }}</div>
                     </div>
                 @endforeach

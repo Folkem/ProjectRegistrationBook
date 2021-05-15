@@ -2,6 +2,11 @@
 
 return [
     'required' => 'The :attribute field is required.',
+    'string' => 'Параметр ":attribute" повинен бути текстом.',
+    'between' => [
+        'string' => 'Параметр ":attribute" повинен бути довжиною від :min до :max символів.',
+    ],
+    'in' => 'Параметр ":attribute" не є валідним.',
 
     'custom' => [
         'attribute-name' => [
@@ -12,5 +17,10 @@ return [
     'attributes' => [
         'name' => 'ім\'я',
         'password' => 'пароль',
+        'student' => 'студент',
+        'supervisor' => 'керівник',
+        'theme' => 'тема',
+        'group' => 'група',
+        'project_type_id' => 'тип проекту',
     ],
 ];
