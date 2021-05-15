@@ -9,11 +9,29 @@ use Illuminate\Validation\Rule;
 
 class ProjectController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $projects = Project::paginate(10)->withQueryString();
+        $projects = Project::query();
+        if ($student = $request->get('student')) {
+            $projects = $projects->where('student', 'like', "%{$student}%");
+        }
+        if ($supervisor = $request->get('supervisor')) {
+            $projects = $projects->where('supervisor', 'like', "%{$supervisor}%");
+        }
+        if ($theme = $request->get('theme')) {
+            $projects = $projects->where('theme', 'like', "%{$theme}%");
+        }
+        if ($group = $request->get('group')) {
+            $projects = $projects->where('group', 'like', "%{$group}%");
+        }
+        if ($project_type_id = $request->get('project_type_id')) {
+            $projects = $projects->where('project_type_id', 'like', "%{$project_type_id}%");
+        }
 
-        return view('projects.index', compact('projects'));
+        $projects = $projects->paginate(10)->withQueryString();
+        $types = ProjectType::all();
+
+        return view('projects.index', compact('projects', 'types'));
     }
 
     public function create()
