@@ -10,6 +10,8 @@ class Project extends Model
 {
     use HasFactory;
 
+    protected array $guarded = [];
+
     public function projectType(): BelongsTo
     {
         return $this->belongsTo(ProjectType::class);

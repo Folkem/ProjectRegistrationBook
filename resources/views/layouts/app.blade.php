@@ -8,7 +8,7 @@
     <title>@yield('title') — {{ config('app.name') }}</title>
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 </head>
-<body class="w-screen h-screen flex bg-gray-200">
+<body class="w-screen h-screen overflow-x-hidden bg-gray-200">
 @yield('body')
 </body>
 </html>
