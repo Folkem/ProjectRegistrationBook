@@ -6,6 +6,7 @@ use App\Models\Project;
 use App\Models\ProjectType;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use SimpleXLSXGen;
 
 class ProjectController extends Controller
 {
@@ -59,23 +60,43 @@ class ProjectController extends Controller
         return back()->with('message', 'Проект зареєстровано');
     }
 
-    public function show(Project $project)
+    public function export(Request $request)
     {
-        //
-    }
+        $projects = Project::query();
+        if ($student = $request->get('student')) {
+            $projects = $projects->where('student', 'like', "%{$student}%");
+        }
+        if ($supervisor = $request->get('supervisor')) {
+            $projects = $projects->where('supervisor', 'like', "%{$supervisor}%");
+        }
+        if ($theme = $request->get('theme')) {
+            $projects = $projects->where('theme', 'like', "%{$theme}%");
+        }
+        if ($group = $request->get('group')) {
+            $projects = $projects->where('group', 'like', "%{$group}%");
+        }
+        if ($project_type_id = $request->get('project_type_id')) {
+            $projects = $projects->where('project_type_id', 'like', "%{$project_type_id}%");
+        }
 
-    public function edit(Project $project)
-    {
-        //
-    }
+        $projectsJsonArray = $projects
+            ->with('projectType')
+            ->get(['student', 'supervisor', 'theme', 'group', 'project_type_id', 'created_at'])
+            ->map(function ($project) {
+                return [
+                    'student' => $project->student,
+                    'supervisor' => $project->supervisor,
+                    'theme' => $project->theme,
+                    'group' => $project->group,
+                    'created_at' => $project->created_at->format('Y.m.d H:i:s'),
+                    'project_type' => $project->projectType->name,
+                ];
+            })
+            ->all();
 
-    public function update(Request $request, Project $project)
-    {
-        //
-    }
-
-    public function destroy(Project $project)
-    {
-        //
+        $xlsx = SimpleXLSXGen::fromArray(array_merge([[
+            'Студент', 'Керівник', 'Тема', 'Група', 'Тип проекту', 'Дата реєстрації',
+        ]], $projectsJsonArray), 'Sheet 1');
+        $xlsx->downloadAs('Експортовані проекти.xlsx');
     }
 }
