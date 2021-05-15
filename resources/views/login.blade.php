@@ -16,10 +16,10 @@
             <form action="{{ route('login') }}" method="post" autocomplete="on" class="flex flex-col gap-4">
                 @csrf
                 <div>
-                    <label for="name" class="sr-only">Ваше ім'я: </label>
-                    <input type="text" name="name" id="name" required placeholder="Ім'я"
+                    <label for="username" class="sr-only">Ваше ім'я: </label>
+                    <input type="text" name="username" id="username" required placeholder="Ім'я"
                         class="w-full border-gray-300 border-2 bg-gray-100 p-3 rounded-lg">
-                    @error('name')
+                    @error('username')
                         <div class="text-red-600 px-4 mt-2 break-words">
                             {{ $message }}
                         </div>
