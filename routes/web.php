@@ -21,6 +21,7 @@ Route::middleware(['auth'])->group(function () {
         ->name('projects.upload.preview');
     Route::post('projects/upload/store', [ProjectController::class, 'uploadStore'])
         ->name('projects.upload.store');
+    Route::delete('projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
 
     Route::redirect('/', 'projects');
 });

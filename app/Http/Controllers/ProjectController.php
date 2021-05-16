@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Project;
 use App\Models\ProjectType;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use SimpleXLSX;
@@ -44,7 +45,7 @@ class ProjectController extends Controller
         return view('projects.create', compact('types'));
     }
     
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'student' => ['between:3,255', 'required', 'string'],
@@ -203,5 +204,12 @@ class ProjectController extends Controller
             'status' => 'success',
             'message' => 'Проекти були успішно зареєстровані',
         ]);
+    }
+    
+    public function destroy(Project $project): RedirectResponse
+    {
+        $project->delete();
+        
+        return back();
     }
 }
