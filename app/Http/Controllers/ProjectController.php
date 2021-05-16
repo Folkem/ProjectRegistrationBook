@@ -212,4 +212,35 @@ class ProjectController extends Controller
         
         return back();
     }
+    
+    public function edit(Project $project)
+    {
+        $types = ProjectType::all();
+        
+        return view('projects.edit', compact('project', 'types'));
+    }
+    
+    public function update(Request $request, Project $project): RedirectResponse
+    {
+        $projectTypeIds = ProjectType::query()
+            ->get('id')
+            ->map(function ($projectType) {
+                return $projectType->id;
+            })->toArray();
+        
+        $validated = $request->validate([
+            'student' => 'required|string|between:3,255',
+            'group' => 'required|string|between:3,255',
+            'supervisor' => 'required|string|between:3,255',
+            'theme' => 'required|string|between:3,255',
+            'project_type_id' => [
+                'required',
+                Rule::in($projectTypeIds),
+            ],
+        ]);
+        
+        $project->update($validated);
+        
+        return back()->with('message', 'Проект оновлено.');
+    }
 }

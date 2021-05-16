@@ -12,16 +12,16 @@ Route::middleware(['guest'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('logout', [LoginController::class, 'logout'])->name('logout');
 
-    Route::get('projects', [ProjectController::class, 'index'])->name('projects.index');
-    Route::get('projects/create', [ProjectController::class, 'create'])->name('projects.create');
-    Route::post('projects', [ProjectController::class, 'store'])->name('projects.store');
+    Route::resource('projects', ProjectController::class)->except('show');
+
     Route::get('projects/export', [ProjectController::class, 'export'])->name('projects.export');
     Route::get('projects/upload', [ProjectController::class, 'upload'])->name('projects.upload');
     Route::post('projects/upload/preview', [ProjectController::class, 'uploadPreview'])
         ->name('projects.upload.preview');
     Route::post('projects/upload/store', [ProjectController::class, 'uploadStore'])
         ->name('projects.upload.store');
-    Route::delete('projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
 
-    Route::redirect('/', 'projects');
+    Route::get('/', function() {
+        return redirect('projects');
+    });
 });

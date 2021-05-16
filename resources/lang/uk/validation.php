@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'required' => 'The :attribute field is required.',
+    'required' => 'Параметр ":attribute" обов\'язковий.',
     'string' => 'Параметр ":attribute" повинен бути текстом.',
     'between' => [
         'string' => 'Параметр ":attribute" повинен бути довжиною від :min до :max символів.',

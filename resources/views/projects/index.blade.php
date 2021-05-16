@@ -24,15 +24,19 @@
                             <div><b>Тема:</b> {{ $project->theme }}</div>
                             <div><b>Тип:</b> {{ $project->projectType->name }}</div>
                             <div><b>Дата реєстрації:</b> {{ $project->created_at }}</div>
-                            <div class="mt-4">
+                            <div class="mt-4 flex flex-row gap-4">
                                 <form action="{{ route('projects.destroy', $project) }}" method="post">
                                     @csrf
                                     @method('delete')
                                     <button type="submit" title="Видалити даний проект">
                                         <img src="{{ asset('delete-icon.png') }}" alt="Видалити"
-                                             class="w-10 h-10 rounded-lg p-1 bg-red-400 hover:bg-red-700">
+                                             class="w-10 h-10 rounded-lg p-1.5 bg-red-400 hover:bg-red-700">
                                     </button>
                                 </form>
+                                <a href="{{ route('projects.edit', $project) }}" title="Перейти до форми редагування">
+                                    <img src="{{ asset('edit-icon.png') }}" alt="Перейти до форми редагування"
+                                         class="w-10 h-10 rounded-lg p-1.5 bg-yellow-400 hover:bg-yellow-500">
+                                </a>
                             </div>
                         </div>
                     @endforeach
