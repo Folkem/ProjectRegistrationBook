@@ -98,7 +98,7 @@ class ProjectController extends Controller
             ->all();
         
         $xlsx = SimpleXLSXGen::fromArray(array_merge([[
-            'Студент', 'Керівник', 'Тема', 'Група', 'Тип проекту', 'Дата реєстрації',
+            'Студент', 'Керівник', 'Тема', 'Група', 'Дата реєстрації', 'Тип проекту',
         ]], $projectsJsonArray), 'Sheet 1');
         $xlsx->downloadAs('Експортовані проекти.xlsx');
     }
