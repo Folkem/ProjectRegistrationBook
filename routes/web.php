@@ -16,6 +16,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('projects/create', [ProjectController::class, 'create'])->name('projects.create');
     Route::post('projects', [ProjectController::class, 'store'])->name('projects.store');
     Route::get('projects/export', [ProjectController::class, 'export'])->name('projects.export');
+    Route::get('projects/upload', [ProjectController::class, 'upload'])->name('projects.upload');
+    Route::post('projects/upload/preview', [ProjectController::class, 'uploadPreview'])
+        ->name('projects.upload.preview');
+    Route::post('projects/upload/store', [ProjectController::class, 'uploadStore'])
+        ->name('projects.upload.store');
 
     Route::redirect('/', 'projects');
 });
