@@ -24,7 +24,7 @@ class LoginController extends Controller
             ]);
         }
 
-        return redirect('/');
+        return redirect(route('projects.create'));
     }
 
     public function logout()
