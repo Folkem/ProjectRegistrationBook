@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
-@section('title', 'Реєстрація проекту')
+@section('title', 'Реєстрація')
 
 @section('body')
     @include('layouts.header')
 
     <div class="flex w-full h-5/6">
         <div class="w-1/4 h-auto flex flex-col gap-4 m-auto rounded-3xl overflow-hidden p-4 border-black border-2">
-            <div class="text-3xl text-center">Реєстрація проекту</div>
+            <div class="text-3xl text-center">Реєстрація</div>
             @if(session()->has('message'))
                 <div class="w-full p-2 text-center text-lg rounded-xl bg-green-400">
                     {{ session('message') }}

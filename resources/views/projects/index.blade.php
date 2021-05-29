@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-    Проекти - Сторінка №{{ $projects->currentPage() }}
+    Журнал реєстрації - Сторінка №{{ $projects->currentPage() }}
 @endsection
 
 @section('body')
@@ -9,7 +9,7 @@
 
     <div class="w-2/3 h-5/6 flex flex-row mx-auto my-6 rounded-3xl overflow-hidden border-2 border-black">
         <div class="w-2/3 h-full bg-white p-4 flex flex-col gap-4 border-r-2 border-black">
-            <div class="text-center w-full text-3xl">Проекти</div>
+            <div class="text-center w-full text-3xl">Журнал реєстрації</div>
             @if($projects->count() == 0)
                 <div class="text-center mt-6 text-lg italic">
                     Проектів не було знайдено.

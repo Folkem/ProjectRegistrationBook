@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\SettingsController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['guest'])->group(function () {
@@ -10,6 +11,9 @@ Route::middleware(['guest'])->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('settings', [SettingsController::class, 'index'])->name('settings.index');
+    Route::put('settings/update', [SettingsController::class, 'update'])->name('settings.update');
+
     Route::get('logout', [LoginController::class, 'logout'])->name('logout');
 
     Route::resource('projects', ProjectController::class)->except('show');
