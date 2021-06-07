@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Supervisor;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -13,10 +14,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->call([
-            UserSeeder::class,
-            ProjectTypeSeeder::class,
-            ProjectSeeder::class,
-        ]);
+        $this->call(GroupSeeder::class);
+        $this->call(SupervisorSeeder::class);
+        $this->call(UserSeeder::class);
+        $this->call(ProjectTypeSeeder::class);
+        $this->call(ProjectSeeder::class);
     }
 }

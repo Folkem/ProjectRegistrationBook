@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\GroupController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\SettingsController;
@@ -13,19 +14,21 @@ Route::middleware(['guest'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('settings', [SettingsController::class, 'index'])->name('settings.index');
     Route::put('settings/update', [SettingsController::class, 'update'])->name('settings.update');
-
+    
     Route::get('logout', [LoginController::class, 'logout'])->name('logout');
-
+    
     Route::resource('projects', ProjectController::class)->except('show');
-
+    
     Route::get('projects/export', [ProjectController::class, 'export'])->name('projects.export');
     Route::get('projects/upload', [ProjectController::class, 'upload'])->name('projects.upload');
     Route::post('projects/upload/preview', [ProjectController::class, 'uploadPreview'])
         ->name('projects.upload.preview');
     Route::post('projects/upload/store', [ProjectController::class, 'uploadStore'])
         ->name('projects.upload.store');
-
-    Route::get('/', function() {
+    
+    Route::resource('groups', GroupController::class)->except(['show']);
+    
+    Route::get('/', function () {
         return redirect('projects');
     });
 });

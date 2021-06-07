@@ -3,5 +3,6 @@
     <a href="{{ route('projects.upload') }}">Завантаження через excel-файл</a>
     <a href="{{ route('projects.index') }}">Журнал реєстрації</a>
     <a href="{{ route('settings.index') }}">Налаштування</a>
+    <a href="{{ route('groups.index') }}">Групи</a>
     <a href="{{ route('logout') }}">Вийти</a>
 </div>

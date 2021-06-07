@@ -16,6 +16,17 @@
             <form action="{{ route('projects.store') }}" method="post" class="flex flex-col gap-4">
                 @csrf
                 <div>
+                    <label for="reg-number" class="sr-only">Реєстраційний номер: </label>
+                    <input type="number" name="reg-number" id="reg-number" placeholder="Реєстраційний номер"
+                           value="{{ old('reg-number') }}"
+                           class="w-full px-4 py-2 border-2 border-gray-300 rounded-md">
+                    @error('reg-number')
+                    <div class="text-red-700 px-4">
+                        {{ $message }}
+                    </div>
+                    @enderror
+                </div>
+                <div>
                     <label for="student" class="sr-only">Студент: </label>
                     <input type="text" name="student" id="student" placeholder="Студент" value="{{ old('student') }}"
                            class="w-full px-4 py-2 border-2 border-gray-300 rounded-md">
@@ -47,14 +58,16 @@
                     @enderror
                 </div>
                 <div>
-                    <label for="project_type_id" class="sr-only">Тип: </label>
-                    <select name="project_type_id" id="project_type_id"
-                            class="w-full px-3 py-2 border-2 border-gray-300 rounded-md bg-gray-100">
+                    <label for="project-type" class="sr-only">Вид роботи: </label>
+                    <input list="project-types" name="project-type" id="project-type"
+                           placeholder="Вид роботи" value="{{ old('project-type') }}"
+                           class="w-full px-4 py-2 border-2 border-gray-300 rounded-md">
+                    <datalist id="project-types">
                         @foreach($types as $type)
-                            <option value="{{ $type->id }}">{{ $type->name }}</option>
+                            <option value="{{ $type->name }}"></option>
                         @endforeach
-                    </select>
-                    @error('project_type_id')
+                    </datalist>
+                    @error('project-type')
                     <div class="text-red-700 px-4">
                         {{ $message }}
                     </div>

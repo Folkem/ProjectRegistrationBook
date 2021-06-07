@@ -48,14 +48,18 @@ class ProjectController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'student' => ['between:3,255', 'required', 'string'],
-            'supervisor' => ['between:3,255', 'required', 'string'],
+            // registration number
+            'student' => ['between:3,255', 'required', 'string', 'alpha'],
+            'supervisor' => ['between:3,255', 'required', 'string', 'alpha'],
             'theme' => ['between:3,255', 'required', 'string'],
             'group' => ['between:3,255', 'required', 'string'],
-            'project_type_id' => [
+            'project-type' => [
                 'required',
-                Rule::in(ProjectType::query()->get('id')->modelKeys()),
+                Rule::in(ProjectType::query()->get('name')->map(function ($projectType) {
+                    return $projectType->name;
+                })),
             ],
+            // date
         ]);
         
         Project::query()->create($validated);
