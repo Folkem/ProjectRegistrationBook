@@ -18,10 +18,8 @@ class GroupSeeder extends Seeder
             'КН', 'ЗВ', 'ТО', 'БС', 'БО', 'ФК', 'ПР',
         ];
         for ($year = 1; $year <= 4; $year++) {
-            for ($number = 1; $number <= 3; $number++) {
-                foreach ($specialities as $speciality) {
-                    Group::query()->create(['name' => "$speciality-$year$number"]);
-                }
+            foreach ($specialities as $speciality) {
+                Group::query()->create(['name' => sprintf("%s-%s1", $speciality, $year)]);
             }
         }
     }

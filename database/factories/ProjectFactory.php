@@ -2,8 +2,10 @@
 
 namespace Database\Factories;
 
+use App\Models\Group;
 use App\Models\Project;
 use App\Models\ProjectType;
+use App\Models\Supervisor;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ProjectFactory extends Factory
@@ -22,18 +24,16 @@ class ProjectFactory extends Factory
      */
     public function definition()
     {
-        $groups = [
-            'КН-11',
-            'КН-43',
-            'БС-21',
-            'ПРз-31'
-        ];
         return [
-            'student' => $this->faker->name,
-            'supervisor' => $this->faker->name,
+            'registration_number' => $this->faker->unique()->numberBetween(1, 1000),
+            'student' => $this->faker->name(),
             'theme' => $this->faker->realTextBetween(10, 80),
-            'group' => $this->faker->randomElement($groups),
-            'project_type_id' => ProjectType::query()->inRandomOrder()->get()->first()->id
+            'supervisor_id' => Supervisor::all()->random()->id,
+            'group_id' => Group::all()->random()->id,
+            'project_type_id' => ProjectType::all()->random()->id,
+            'grade' => $this->faker->numberBetween(60, 100),
+            'registered_at' => $this->faker->dateTimeThisYear(),
+            'defended_at' => $this->faker->dateTimeThisYear(),
         ];
     }
 }

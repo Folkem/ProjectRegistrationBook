@@ -14,23 +14,11 @@ class ProjectTypeSeeder extends Seeder
      */
     public function run()
     {
-        ProjectType::query()->create([
-            'name' => 'Курсова робота',
-        ]);
-        ProjectType::query()->create([
-            'name' => 'Курсовий проект',
-        ]);
-        ProjectType::query()->create([
-            'name' => 'Навчальна практика',
-        ]);
-        ProjectType::query()->create([
-            'name' => 'Виробничо-технологічна практика',
-        ]);
-        ProjectType::query()->create([
-            'name' => 'Переддипломна практика',
-        ]);
-        ProjectType::query()->create([
-            'name' => 'Дипломний проект',
-        ]);
+        ProjectType::query()->create(['name' => 'Курсова робота']);
+        ProjectType::query()->create(['name' => 'Курсовий проект']);
+        ProjectType::query()->create(['name' => 'Навчальна практика']);
+        ProjectType::query()->create(['name' => 'Виробничо-технологічна практика']);
+        ProjectType::query()->create(['name' => 'Переддипломна практика']);
+        ProjectType::query()->create(['name' => 'Дипломний проект']);
     }
 }

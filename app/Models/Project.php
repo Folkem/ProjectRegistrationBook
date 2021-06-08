@@ -10,10 +10,25 @@ class Project extends Model
 {
     use HasFactory;
 
-    protected array $guarded = [];
+    protected $guarded = [];
+    
+    protected $casts = [
+        'registered_at' => 'datetime',
+        'defended_at' => 'datetime',
+    ];
 
     public function projectType(): BelongsTo
     {
         return $this->belongsTo(ProjectType::class);
+    }
+    
+    public function supervisor(): BelongsTo
+    {
+        return $this->belongsTo(Supervisor::class);
+    }
+    
+    public function group(): BelongsTo
+    {
+        return $this->belongsTo(Group::class);
     }
 }
