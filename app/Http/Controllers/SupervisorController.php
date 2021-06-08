@@ -11,14 +11,14 @@ class SupervisorController extends Controller
 {
     public function index()
     {
-        $supervisors = Supervisor::all();
+        $supervisors = Supervisor::query()->withCount('projects')->paginate(10);
         
         return view('supervisors.index', compact('supervisors'));
     }
     
     public function create()
     {
-        return view('supervisors.index');
+        return view('supervisors.create');
     }
     
     public function store(Request $request): RedirectResponse
@@ -34,7 +34,7 @@ class SupervisorController extends Controller
         
         Supervisor::query()->create(['name' => $request->input('name')]);
         
-        return back()->with('message', 'Керівник успішно створений.');
+        return back()->with('message', 'Керівник успішно доданий.');
     }
     
     public function edit(Supervisor $supervisor)
@@ -48,7 +48,7 @@ class SupervisorController extends Controller
             'name' => [
                 'required',
                 'string',
-                'between:3,10',
+                'between:3,255',
                 Rule::unique('groups', 'name')
                     ->ignore($supervisor->name, 'name'),
             ],
@@ -61,6 +61,12 @@ class SupervisorController extends Controller
     
     public function destroy(Supervisor $supervisor): RedirectResponse
     {
+        if ($supervisor->projects()->count() < 0) {
+            return back()->with([
+                'message' => 'Спочатку видаліть чи відредагуйте усі проекти з даним керівником',
+            ]);
+        }
+        
         $supervisor->delete();
         
         return back();

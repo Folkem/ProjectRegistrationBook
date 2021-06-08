@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateUpdateProjectRequest;
+use App\Models\Group;
 use App\Models\Project;
 use App\Models\ProjectType;
+use App\Models\Supervisor;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use SimpleXLSX;
 use SimpleXLSXGen;
 
@@ -18,53 +20,61 @@ class ProjectController extends Controller
         if ($student = $request->get('student')) {
             $projects = $projects->where('student', 'like', "%{$student}%");
         }
-        if ($supervisor = $request->get('supervisor')) {
-            $projects = $projects->where('supervisor', 'like', "%{$supervisor}%");
-        }
         if ($theme = $request->get('theme')) {
             $projects = $projects->where('theme', 'like', "%{$theme}%");
         }
-        if ($group = $request->get('group')) {
-            $projects = $projects->where('group', 'like', "%{$group}%");
+        if ($yearFrom = $request->get('year_from')) {
+            $projects = $projects->whereYear('registered_at', '>=', $yearFrom);
         }
-        if ($project_type_id = $request->get('project_type_id')) {
-            $projects = $projects->where('project_type_id', 'like', "%{$project_type_id}%");
+        if ($yearTo = $request->get('year_to')) {
+            $projects = $projects->whereYear('registered_at', '<=', $yearTo);
+        }
+        if (($supervisorId = $request->get('supervisor_id')) != null && $supervisorId != 'null') {
+            $projects = $projects->where('supervisor_id', $supervisorId);
+        }
+        if (($groupId = $request->get('group_id')) != null && $groupId != 'null') {
+            $projects = $projects->where('group_id', $groupId);
+        }
+        if (($projectTypeId = $request->get('project_type_id')) != null && $projectTypeId != 'null') {
+            $projects = $projects->where('project_type_id', $projectTypeId);
         }
         
-        /** @noinspection PhpUndefinedMethodInspection */
-        $projects = $projects->paginate(10)->withQueryString();
-        $types = ProjectType::all();
+        $projects = $projects->get();
+        $projectTypes = ProjectType::all();
+        $supervisors = Supervisor::all();
+        $groups = Group::all();
         
-        return view('projects.index', compact('projects', 'types'));
+        return view('projects.index', compact('projects',
+            'projectTypes', 'groups', 'supervisors'));
     }
     
     public function create()
     {
         $types = ProjectType::all();
+        $groups = Group::all();
+        $supervisors = Supervisor::all();
         
-        return view('projects.create', compact('types'));
+        return view('projects.create', compact('types', 'groups', 'supervisors'));
     }
     
-    public function store(Request $request): RedirectResponse
+    public function store(CreateUpdateProjectRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            // registration number
-            'student' => ['between:3,255', 'required', 'string', 'alpha'],
-            'supervisor' => ['between:3,255', 'required', 'string', 'alpha'],
-            'theme' => ['between:3,255', 'required', 'string'],
-            'group' => ['between:3,255', 'required', 'string'],
-            'project-type' => [
-                'required',
-                Rule::in(ProjectType::query()->get('name')->map(function ($projectType) {
-                    return $projectType->name;
-                })),
-            ],
-            // date
+        Project::query()->create([
+            'registration_number' => $request->input('registration_number'),
+            'student' => $request->input('student'),
+            'supervisor_id' => Supervisor::query()
+                ->where('name', $request->input('supervisor'))->first()->id,
+            'group_id' => Group::query()
+                ->where('name', $request->input('group'))->first()->id,
+            'project_type_id' => ProjectType::query()
+                ->where('name', $request->input('project_type'))->first()->id,
+            'theme' => $request->input('theme'),
+            'registered_at' => $request->input('registered_at'),
+            'defended_at' => $request->input('defended_at'),
+            'grade' => $request->input('grade'),
         ]);
         
-        Project::query()->create($validated);
-        
-        return back()->with('message', 'Проект зареєстровано');
+        return back()->with('message', 'Проект зареєстровано.');
     }
     
     public function export(Request $request)
@@ -158,6 +168,7 @@ class ProjectController extends Controller
         ]);
     }
     
+    // todo:
     public function uploadStore(Request $request)
     {
         $projectTypeId = $request->input('project-type');
@@ -182,7 +193,6 @@ class ProjectController extends Controller
         $projects = json_decode($projects);
         
         // something seems wrong...
-        // todo: refactor
         if (!is_array($projects) || count($projects) === 0) {
             return json_encode([
                 'status' => 'failure',
@@ -194,11 +204,18 @@ class ProjectController extends Controller
             return json_decode(json_encode($project), true);
         }, $projects);
         
+        $existingRegistrationNumbers = Project::all()->map(fn($project) => $project->registration_number)->toArray();
+        $registrationNumber = 0;
         foreach ($projects as $project) {
+            $registrationNumber++;
+            while (in_array($registrationNumber, $existingRegistrationNumbers)) {
+                $registrationNumber++;
+            }
             Project::query()->create([
+                'registration_number' => $registrationNumber,
                 'student' => $project['student'],
-                'group' => $project['group'],
-                'supervisor' => $project['supervisor'],
+                'group_id' => Group::query()->firstOrCreate(['name' => $project['group']])->id,
+                'supervisor_id' => Supervisor::query()->firstOrCreate(['name' => $project['supervisor']])->id,
                 'theme' => $project['theme'],
                 'project_type_id' => $projectTypeId,
             ]);
@@ -224,26 +241,22 @@ class ProjectController extends Controller
         return view('projects.edit', compact('project', 'types'));
     }
     
-    public function update(Request $request, Project $project): RedirectResponse
+    public function update(CreateUpdateProjectRequest $request, Project $project): RedirectResponse
     {
-        $projectTypeIds = ProjectType::query()
-            ->get('id')
-            ->map(function ($projectType) {
-                return $projectType->id;
-            })->toArray();
-        
-        $validated = $request->validate([
-            'student' => 'required|string|between:3,255',
-            'group' => 'required|string|between:3,255',
-            'supervisor' => 'required|string|between:3,255',
-            'theme' => 'required|string|between:3,255',
-            'project_type_id' => [
-                'required',
-                Rule::in($projectTypeIds),
-            ],
+        $project->update([
+            'registration_number' => $request->input('registration_number'),
+            'student' => $request->input('student'),
+            'supervisor_id' => Supervisor::query()
+                ->where('name', $request->input('supervisor'))->first()->id,
+            'group_id' => Group::query()
+                ->where('name', $request->input('group'))->first()->id,
+            'project_type_id' => ProjectType::query()
+                ->where('name', $request->input('project_type'))->first()->id,
+            'theme' => $request->input('theme'),
+            'registered_at' => $request->input('registered_at'),
+            'defended_at' => $request->input('defended_at'),
+            'grade' => $request->input('grade'),
         ]);
-        
-        $project->update($validated);
         
         return back()->with('message', 'Проект оновлено.');
     }

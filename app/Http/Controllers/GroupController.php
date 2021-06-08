@@ -11,7 +11,7 @@ class GroupController extends Controller
 {
     public function index()
     {
-        $groups = Group::query()->paginate(10);
+        $groups = Group::query()->withCount('projects')->paginate(10);
         
         return view('groups.index', compact('groups'));
     }

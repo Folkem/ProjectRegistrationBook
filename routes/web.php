@@ -3,7 +3,9 @@
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\ProjectTypeController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\SupervisorController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['guest'])->group(function () {
@@ -27,6 +29,8 @@ Route::middleware(['auth'])->group(function () {
         ->name('projects.upload.store');
     
     Route::resource('groups', GroupController::class)->except(['show']);
+    Route::resource('supervisors', SupervisorController::class)->except(['show']);
+    Route::resource('project-types', ProjectTypeController::class)->except(['show']);
     
     Route::get('/', function () {
         return redirect('projects');

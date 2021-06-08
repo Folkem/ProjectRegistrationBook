@@ -9,8 +9,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class ProjectType extends Model
 {
     use HasFactory;
-
-    public $timestamps = false;
+    
+    protected $guarded = [];
 
     public function projects(): HasMany
     {

@@ -1,10 +1,15 @@
 {
-  "name": "laravel/laravel",
+  "name": "fnsh/project-registration-book",
   "type": "project",
-  "description": "The Laravel Framework.",
+  "description": "Webapp for Faculty of Natural Sciences and Humanities. Provides easy access to college projects such as course works, diplomas etc.",
   "keywords": [
     "framework",
-    "laravel"
+    "laravel",
+    "tailwindcss",
+    "fnsh",
+    "pgfk",
+    "project",
+    "book"
   ],
   "license": "MIT",
   "require": {
@@ -19,7 +24,7 @@
     "shuchkin/simplexlsx": "0.8.21"
   },
   "require-dev": {
-    "facade/ignition": "^2.5",
+    "facade/ignition": "^2.9",
     "fakerphp/faker": "^1.9.1",
     "laravel/sail": "^1.0.1",
     "mockery/mockery": "^1.4.2",

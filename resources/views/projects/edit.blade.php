@@ -17,22 +17,23 @@
                 @csrf
                 @method('put')
                 <div>
-                    <label for="student" class="sr-only">Студент: </label>
-                    <input type="text" name="student" id="student" placeholder="Студент"
-                           value="{{ old('student') ?: $project->student }}"
+                    <label for="registration_number" class="sr-only">Реєстраційний номер: </label>
+                    <input type="number" name="registration_number" id="registration_number"
+                           placeholder="Реєстраційний номер" min="1" max="{{ PHP_INT_MAX }}"
+                           value="{{ old('registration_number') ?: $project->registration_number }}"
                            class="w-full px-4 py-2 border-2 border-gray-300 rounded-md">
-                    @error('student')
+                    @error('registration_number')
                     <div class="text-red-700 px-4">
                         {{ $message }}
                     </div>
                     @enderror
                 </div>
                 <div>
-                    <label for="supervisor" class="sr-only">Керівник: </label>
-                    <input type="text" name="supervisor" id="supervisor" placeholder="Керівник"
-                           value="{{ old('supervisor') ?: $project->supervisor }}"
+                    <label for="student" class="sr-only">Студент: </label>
+                    <input type="text" name="student" id="student" placeholder="Студент"
+                           value="{{ old('student') ?: $project->student }}"
                            class="w-full px-4 py-2 border-2 border-gray-300 rounded-md">
-                    @error('supervisor')
+                    @error('student')
                     <div class="text-red-700 px-4">
                         {{ $message }}
                     </div>
@@ -50,27 +51,90 @@
                     @enderror
                 </div>
                 <div>
-                    <label for="project_type_id" class="sr-only">Тип: </label>
-                    <select name="project_type_id" id="project_type_id"
-                            class="w-full px-3 py-2 border-2 border-gray-300 rounded-md bg-gray-100">
-                        @foreach($types as $type)
-                            <option value="{{ $type->id }}" @if($project->projectType == $type) selected @endif>
-                                {{ $type->name }}
-                            </option>
+                    <label for="supervisor" class="sr-only">Вид роботи: </label>
+                    <input list="supervisors" name="supervisor" id="supervisor"
+                           placeholder="Науковий керівник" value="{{ old('supervisor') }}"
+                           class="w-full px-4 py-2 border-2 border-gray-300 rounded-md">
+                    <datalist id="supervisors">
+                        @foreach($supervisors as $supervisor)
+                            <option value="{{ $supervisor->name }}"
+                                    @if($project->supervisor == $supervisor) selected @endif></option>
                         @endforeach
-                    </select>
-                    @error('project_type_id')
+                    </datalist>
+                    @error('supervisor')
                     <div class="text-red-700 px-4">
                         {{ $message }}
                     </div>
                     @enderror
                 </div>
                 <div>
-                    <label for="group" class="sr-only">Група: </label>
-                    <input type="text" name="group" id="group" placeholder="Група"
-                           value="{{ old('group') ?: $project->group }}"
+                    <label for="project_type" class="sr-only">Вид роботи: </label>
+                    <input list="project_types" name="project_type" id="project_type"
+                           placeholder="Вид роботи" value="{{ old('project_type') }}"
                            class="w-full px-4 py-2 border-2 border-gray-300 rounded-md">
+                    <datalist id="project_types">
+                        @foreach($types as $type)
+                            <option value="{{ $type->name }}"
+                                    @if($project->type == $type) selected @endif></option>
+                        @endforeach
+                    </datalist>
+                    @error('project_type')
+                    <div class="text-red-700 px-4">
+                        {{ $message }}
+                    </div>
+                    @enderror
+                </div>
+                <div>
+                    <label for="group" class="sr-only">Вид роботи: </label>
+                    <input list="groups" name="group" id="group"
+                           placeholder="Група" value="{{ old('group') }}"
+                           class="w-full px-4 py-2 border-2 border-gray-300 rounded-md">
+                    <datalist id="groups">
+                        @foreach($groups as $group)
+                            <option value="{{ $group->name }}"
+                                @if($project->group == $group) selected @endif></option>
+                        @endforeach
+                    </datalist>
                     @error('group')
+                    <div class="text-red-700 px-4">
+                        {{ $message }}
+                    </div>
+                    @enderror
+                </div>
+                <div>
+                    <label for="registered_at" class="sr-only">Дата реєстрації: </label>
+                    <input type="date" name="registered_at" id="registered_at" placeholder="Дата реєстрації"
+                           value="{{ old('registered_at') ?: $project->registered_at->format('Y-M-D\TH:i') }}"
+                           class="w-full px-4 py-2 border-2 border-gray-300 rounded-md">
+                    @error('registered_at')
+                    <div class="text-red-700 px-4">
+                        {{ $message }}
+                    </div>
+                    @enderror
+                </div>
+                <div>
+                    <label for="defended_at" class="sr-only">Дата захисту: </label>
+                    <input type="date" name="defended_at" id="defended_at" placeholder="Дата захисту"
+                           value="{{ old('defended_at') ?: $project->defended_at->format('Y-M-D\TH:i') }}"
+                           class="w-full px-4 py-2 border-2 border-gray-300 rounded-md">
+                    @error('defended_at')
+                    <div class="text-red-700 px-4">
+                        {{ $message }}
+                    </div>
+                    @enderror
+                </div>
+                <div>
+                    <label for="grade" class="sr-only">Оцінка: </label>
+                    <input list="grades" name="grade" id="grade" min="60" max="100"
+                           placeholder="Оцінка" value="{{ old('grade') }}"
+                           class="w-full px-4 py-2 border-2 border-gray-300 rounded-md">
+                    <datalist id="grades">
+                        @for($grade = 60; $grade <= 100; $grade++)
+                            <option value="{{ $grade }}"
+                                @if($project->grade == $grade) selected @endif></option>
+                        @endfor
+                    </datalist>
+                    @error('grade')
                     <div class="text-red-700 px-4">
                         {{ $message }}
                     </div>
